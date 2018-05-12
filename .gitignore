@@ -1,0 +1,41 @@
+# Built application files
+/build
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Gradle generated files
+.gradle/
+
+# Signing files
+.signing/
+
+# User-specific configurations
+/.idea
+*.iml
+gradle-app.setting
+
+# OS-specific files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Private files
+/private
+
+# Local files
+/captures
+/reports
+
+# Temp files
+/temp
+
+# JRE error dumps
+hs_err_*.log
+
+# NDK related
+.externalNativeBuild/
