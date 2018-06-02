@@ -33,14 +33,14 @@ open class ImageAssetsGeneratorTask : DefaultTask() {
     }
 
 
-    fun setupInputOutput() {
+    fun setupInputOutput(outputName: String) {
         val imageTrees = (buildVariant.flavors + buildType + "main").map {
             return@map project.file(arrayOf("src", it, "images").joinToString(File.separator))
         }.filter { it.isDirectory }.map { project.fileTree(it) }
         if (!imageTrees.isEmpty()) {
             inputs.files(*imageTrees.toTypedArray())
             allAssets = imageTrees.flatMap { it.files.map { ImageAsset.get(it, config.outputFormat) } }
-            genDir = File(project.buildDir, arrayOf("generated", "images").joinToString(File.separator))
+            genDir = File(project.buildDir, arrayOf("generated", "images", outputName).joinToString(File.separator))
             outputs.files(allAssets.flatMap { it.getOutputFiles(config, genDir) })
         }
     }

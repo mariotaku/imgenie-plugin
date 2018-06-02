@@ -28,17 +28,17 @@ class ImageAssetsGeneratorPlugin : Plugin<Project> {
 
         buildVariants.forEach { buildVariant ->
             buildTypeNames.forEach { buildTypeName ->
-                val taskName = buildVariant.taskName("generate", buildTypeName, "ImageAssets")
+                val taskName = buildVariant.camelCaseName(buildTypeName, "generate", "ImageAssets")
                 val task = project.tasks.create(taskName, ImageAssetsGeneratorTask::class.java) {
                     it.group = "imageassets"
                     it.config = config
                     it.buildVariant = buildVariant
                     it.buildType = buildTypeName
 
-                    it.setupInputOutput()
+                    it.setupInputOutput(buildVariant.camelCaseName(buildTypeName))
                 }
 
-                project.tasks.injectDependency(buildVariant.taskName("generate", buildTypeName, "Resources"), task)
+                project.tasks.injectDependency(buildVariant.camelCaseName(buildTypeName, "generate", "Resources"), task)
             }
         }
     }

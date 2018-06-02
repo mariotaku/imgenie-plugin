@@ -10,7 +10,7 @@ open class ImageAssetsConfig(
 ) {
 
     val outputDensities: List<Density> = outputDensities.map { Density.getEnum(it) }
-    val outputFormat = OutputFormat.valueOf(outputFormat)
+    val outputFormat = OutputFormat.valueOf(outputFormat.toUpperCase())
 
     constructor(objectFactory: ObjectFactory) : this()
 }

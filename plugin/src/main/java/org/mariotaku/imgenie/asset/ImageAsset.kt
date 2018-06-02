@@ -4,11 +4,8 @@ import com.android.resources.Density
 import org.mariotaku.imgenie.ImageAssetsConfig
 import org.mariotaku.imgenie.model.OutputFormat
 import java.awt.Dimension
-import java.awt.image.RenderedImage
 import java.io.File
-import java.io.IOException
 import java.util.*
-import javax.imageio.ImageIO
 
 abstract class ImageAsset(val source: File, val defOutputFormat: OutputFormat) {
 
@@ -44,23 +41,22 @@ abstract class ImageAsset(val source: File, val defOutputFormat: OutputFormat) {
         }
     }
 
-    open fun readImage(dimension: Dimension? = null): RenderedImage? {
-        return ImageIO.read(source)
-    }
+    abstract fun baseDimension(): Dimension
+
+    abstract fun transcodeImage(output: File, format: OutputFormat, dimension: Dimension? = null)
 
     fun generateImages(config: ImageAssetsConfig, genDir: File) {
-        val baseImage = readImage() ?: throw IOException("Unsupported file $source")
+        val dimension = baseDimension()
         val name = "$outputFilename.${outputFormat.extension}"
         if (!canScale || sourceDensity == Density.NODPI) {
             val fileName = File(getOutputDir(genDir), name)
-            ImageIO.write(baseImage, outputFormat.formatName, fileName)
+            transcodeImage(fileName, outputFormat)
             return
         }
         config.outputDensities.forEach { outDensity ->
             val fileName = File(getOutputDir(genDir, outDensity), name)
-            val scaledImage = if (outDensity == sourceDensity) baseImage else
-                readImage(scaledDimension(baseImage.width, baseImage.height, outDensity))
-            ImageIO.write(scaledImage, outputFormat.formatName, fileName)
+            transcodeImage(fileName, outputFormat, scaledDimension(dimension.width,
+                    dimension.height, outDensity))
         }
     }
 

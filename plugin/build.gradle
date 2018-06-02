@@ -17,12 +17,10 @@ buildscript {
 
 dependencies {
     compile gradleApi()
+    compileOnly 'com.android.tools.build:gradle-core:3.1.2'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile 'com.android.tools.build:gradle:3.1.2'
-    compile 'com.twelvemonkeys.imageio:imageio-batik:3.3.2'
-    compile 'com.twelvemonkeys.imageio:imageio-pdf:3.3.2'
-    compile 'org.apache.xmlgraphics:batik-svgrasterizer:1.9.1'
-
+    compile 'org.apache.xmlgraphics:batik-transcoder:1.9.1'
+    compile 'org.apache.xmlgraphics:batik-codec:1.9.1'
 }
 
 repositories {
