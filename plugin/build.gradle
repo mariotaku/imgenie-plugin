@@ -32,9 +32,9 @@ repositories {
 publishing {
     publications {
         maven(MavenPublication) {
-            groupId 'org.mariotaku.imgenie'
+            groupId 'com.github.mariotaku.ImGenie'
             artifactId 'plugin'
-            version '0.0.1-SNAPSHOT'
+            version '0.0.1'
 
             from components.java
         }
