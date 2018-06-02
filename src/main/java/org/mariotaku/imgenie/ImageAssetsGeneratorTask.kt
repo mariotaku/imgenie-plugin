@@ -11,9 +11,7 @@ open class ImageAssetsGeneratorTask : DefaultTask() {
 
     lateinit var buildVariant: FlavorScope
     lateinit var buildType: String
-
-    private lateinit var allAssets: List<ImageAsset>
-    private lateinit var genDir: File
+    lateinit var genDir: File
 
     init {
         doFirst {
@@ -39,9 +37,7 @@ open class ImageAssetsGeneratorTask : DefaultTask() {
         }.filter { it.isDirectory }.map { project.fileTree(it) }
         if (!imageTrees.isEmpty()) {
             inputs.files(*imageTrees.toTypedArray())
-            allAssets = imageTrees.flatMap { it.files.map { ImageAsset.get(it, config.outputFormat) } }
-            genDir = File(project.buildDir, arrayOf("generated", "images", outputName).joinToString(File.separator))
-            outputs.files(allAssets.flatMap { it.getOutputFiles(config, genDir) })
+            outputs.dir(genDir)
         }
     }
 }

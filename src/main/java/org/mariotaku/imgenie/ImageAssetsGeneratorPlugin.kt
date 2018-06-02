@@ -6,6 +6,7 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskContainer
 import org.mariotaku.imgenie.model.FlavorScope
+import java.io.File
 
 class ImageAssetsGeneratorPlugin : Plugin<Project> {
 
@@ -29,11 +30,20 @@ class ImageAssetsGeneratorPlugin : Plugin<Project> {
         buildVariants.forEach { buildVariant ->
             buildTypeNames.forEach { buildTypeName ->
                 val taskName = buildVariant.camelCaseName(buildTypeName, "generate", "ImageAssets")
+
+                val genImagesDir = File(project.buildDir, arrayOf("generated", "images",
+                        buildVariant.camelCaseName(buildTypeName)).joinToString(File.separator))
+
+                android.sourceSets.maybeCreate(buildVariant.camelCaseName(buildTypeName)).also {
+                    it.res.srcDir(genImagesDir)
+                }
+
                 val task = project.tasks.create(taskName, ImageAssetsGeneratorTask::class.java) {
                     it.group = "imageassets"
                     it.config = config
                     it.buildVariant = buildVariant
                     it.buildType = buildTypeName
+                    it.genDir = genImagesDir
 
                     it.setupInputOutput(buildVariant.camelCaseName(buildTypeName))
                 }
