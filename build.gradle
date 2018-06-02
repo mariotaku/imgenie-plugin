@@ -21,6 +21,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile 'org.apache.xmlgraphics:batik-transcoder:1.9.1'
     compile 'org.apache.xmlgraphics:batik-codec:1.9.1'
+    compile 'org.apache.pdfbox:pdfbox:2.0.9'
 }
 
 repositories {
@@ -34,7 +35,7 @@ publishing {
         maven(MavenPublication) {
             groupId 'com.github.mariotaku'
             artifactId 'imgenie-plugin'
-            version '0.0.3'
+            version '0.0.4'
 
             from components.java
         }

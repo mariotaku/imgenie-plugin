@@ -43,19 +43,20 @@ abstract class ImageAsset(val source: File, val defOutputFormat: OutputFormat) {
 
     abstract fun baseDimension(): Dimension
 
-    abstract fun transcodeImage(output: File, format: OutputFormat, dimension: Dimension? = null)
+    abstract fun transcodeImage(output: File, format: OutputFormat, baseDimension: Dimension,
+                                outputDimension: Dimension? = null)
 
     fun generateImages(config: ImageAssetsConfig, genDir: File) {
         val dimension = baseDimension()
         val name = "$outputFilename.${outputFormat.extension}"
         if (!canScale || sourceDensity == Density.NODPI) {
             val fileName = File(getOutputDir(genDir), name)
-            transcodeImage(fileName, outputFormat)
+            transcodeImage(fileName, outputFormat, dimension)
             return
         }
         config.outputDensities.forEach { outDensity ->
             val fileName = File(getOutputDir(genDir, outDensity), name)
-            transcodeImage(fileName, outputFormat, scaledDimension(dimension.width,
+            transcodeImage(fileName, outputFormat, dimension, scaledDimension(dimension.width,
                     dimension.height, outDensity))
         }
     }
@@ -86,9 +87,8 @@ abstract class ImageAsset(val source: File, val defOutputFormat: OutputFormat) {
 
         fun get(file: File, defOutputFormat: OutputFormat): ImageAsset {
             when (file.extension.toLowerCase()) {
-                "svg" -> {
-                    return SvgImageAsset(file, defOutputFormat)
-                }
+                "svg" -> return SvgImageAsset(file, defOutputFormat)
+                "pdf" -> return PdfImageAsset(file, defOutputFormat)
                 else -> throw UnknownFormatConversionException("Unrecognized file ${file.name}")
             }
         }

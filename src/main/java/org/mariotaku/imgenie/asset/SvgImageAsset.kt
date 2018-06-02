@@ -51,8 +51,8 @@ class SvgImageAsset(source: File, defOutputFormat: OutputFormat) : ImageAsset(so
         }
     }
 
-    override fun transcodeImage(output: File, format: OutputFormat, dimension: Dimension?) {
-        println("output: $output, dimension: $dimension")
+    override fun transcodeImage(output: File, format: OutputFormat, baseDimension: Dimension,
+                                outputDimension: Dimension?) {
         val t = when (format) {
             OutputFormat.JPEG -> JPEGTranscoder().apply {
                 addTranscodingHint(JPEGTranscoder.KEY_QUALITY, 1f)
@@ -60,9 +60,9 @@ class SvgImageAsset(source: File, defOutputFormat: OutputFormat) : ImageAsset(so
             OutputFormat.PNG -> PNGTranscoder()
             else -> throw UnsupportedOperationException()
         }
-        if (dimension != null) {
-            t.addTranscodingHint(SVGAbstractTranscoder.KEY_WIDTH, dimension.width.toFloat())
-            t.addTranscodingHint(SVGAbstractTranscoder.KEY_HEIGHT, dimension.height.toFloat())
+        if (outputDimension != null) {
+            t.addTranscodingHint(SVGAbstractTranscoder.KEY_WIDTH, outputDimension.width.toFloat())
+            t.addTranscodingHint(SVGAbstractTranscoder.KEY_HEIGHT, outputDimension.height.toFloat())
         }
         source.inputStream().use { inStream ->
             output.outputStream().use { outStream ->
