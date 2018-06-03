@@ -21,9 +21,6 @@ import java.io.File
 
 class SvgImageAsset(source: File, defOutputFormat: OutputFormat) : ImageAsset(source, defOutputFormat) {
 
-    override val canScale: Boolean
-        get() = true
-
     override fun baseDimension(): Dimension {
         val factory = SAXSVGDocumentFactory(XMLResourceDescriptor.getXMLParserClassName())
         val agent = DensityUserAgentAdapter(Density.MEDIUM)

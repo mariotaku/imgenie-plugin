@@ -9,8 +9,6 @@ import java.util.*
 
 abstract class ImageAsset(val source: File, val defOutputFormat: OutputFormat) {
 
-    open val canScale: Boolean = false
-
     val outputQualifiers: String
     val outputFilename: String
     val outputFormat: OutputFormat
@@ -49,7 +47,7 @@ abstract class ImageAsset(val source: File, val defOutputFormat: OutputFormat) {
     fun generateImages(config: ImageAssetsConfig, genDir: File) {
         val dimension = baseDimension()
         val name = "$outputFilename.${outputFormat.extension}"
-        if (!canScale || sourceDensity == Density.NODPI) {
+        if (sourceDensity == Density.NODPI) {
             val fileName = File(getOutputDir(genDir), name)
             transcodeImage(fileName, outputFormat, dimension)
             return
@@ -58,16 +56,6 @@ abstract class ImageAsset(val source: File, val defOutputFormat: OutputFormat) {
             val fileName = File(getOutputDir(genDir, outDensity), name)
             transcodeImage(fileName, outputFormat, dimension, scaledDimension(dimension.width,
                     dimension.height, outDensity))
-        }
-    }
-
-    fun getOutputFiles(config: ImageAssetsConfig, genDir: File): List<File> {
-        val name = "$outputFilename.${outputFormat.extension}"
-        if (sourceDensity == Density.NODPI) {
-            return listOf(File(getOutputDir(genDir), name))
-        }
-        return config.outputDensities.map { outDensity ->
-            File(getOutputDir(genDir, outDensity), name)
         }
     }
 
@@ -86,9 +74,10 @@ abstract class ImageAsset(val source: File, val defOutputFormat: OutputFormat) {
         private val densityRegex = Regex("(\\w+dpi)")
 
         fun get(file: File, defOutputFormat: OutputFormat): ImageAsset {
-            when (file.extension.toLowerCase()) {
-                "svg" -> return SvgImageAsset(file, defOutputFormat)
-                "pdf" -> return PdfImageAsset(file, defOutputFormat)
+            return when (file.extension.toLowerCase()) {
+                "svg" -> SvgImageAsset(file, defOutputFormat)
+                "pdf" -> PdfImageAsset(file, defOutputFormat)
+                "jpg", "png" -> BitmapImageAsset(file, defOutputFormat)
                 else -> throw UnknownFormatConversionException("Unrecognized file ${file.name}")
             }
         }

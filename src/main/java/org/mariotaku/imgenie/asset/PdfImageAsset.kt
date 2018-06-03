@@ -12,9 +12,6 @@ import javax.imageio.ImageIO
 
 class PdfImageAsset(file: File, defOutputFormat: OutputFormat) : ImageAsset(file, defOutputFormat) {
 
-    override val canScale: Boolean
-        get() = true
-
     override fun baseDimension(): Dimension {
         return PDDocument.load(source).use {
             val singlePage = it.documentCatalog.pages.single()
