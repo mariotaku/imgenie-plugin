@@ -48,20 +48,24 @@ abstract class ImageAsset(val source: File, val defOutputFormat: OutputFormat) {
         val dimension = baseDimension()
         val name = "$outputFilename.${outputFormat.extension}"
         if (sourceDensity == Density.NODPI) {
-            val fileName = File(getOutputDir(genDir), name)
+            val fileName = File(createOutputDir(genDir), name)
             transcodeImage(fileName, outputFormat, dimension)
             return
         }
         config.outputDensities.forEach { outDensity ->
-            val fileName = File(getOutputDir(genDir, outDensity), name)
+            val fileName = File(createOutputDir(genDir, outDensity), name)
             transcodeImage(fileName, outputFormat, dimension, scaledDimension(dimension.width,
                     dimension.height, outDensity))
         }
     }
 
-    private fun getOutputDir(genDir: File, density: Density = Density.NODPI): File {
+    private fun createOutputDir(genDir: File, density: Density = Density.NODPI): File {
         if (density.dpiValue == 0) return File(genDir, outputQualifiers)
-        return File(genDir, "$outputQualifiers-${density.resourceValue}")
+        val dir = File(genDir, "$outputQualifiers-${density.resourceValue}")
+        if (!dir.exists()) {
+            dir.mkdirs()
+        }
+        return dir
     }
 
     private fun scaledDimension(width: Int, height: Int, outDensity: Density): Dimension {
