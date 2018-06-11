@@ -1,14 +1,15 @@
 package org.mariotaku.imgenie.asset
 
 import org.apache.pdfbox.pdmodel.PDDocument
+import org.apache.pdfbox.rendering.ImageType
 import org.apache.pdfbox.rendering.PDFRenderer
+import org.imgscalr.Scalr
 import org.mariotaku.imgenie.model.OutputFormat
-import java.awt.Color
 import java.awt.Dimension
-import java.awt.Graphics2D
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
+
 
 class PdfImageAsset(file: File, defOutputFormat: OutputFormat) : ImageAsset(file, defOutputFormat) {
 
@@ -22,19 +23,24 @@ class PdfImageAsset(file: File, defOutputFormat: OutputFormat) : ImageAsset(file
 
     override fun transcodeImage(output: File, format: OutputFormat, baseDimension: Dimension,
                                 outputDimension: Dimension?) {
-        PDDocument.load(source).use {
-            val renderer = PDFRenderer(it)
-            val image = if (outputDimension != null) {
-                BufferedImage(outputDimension.width, outputDimension.height, BufferedImage.TYPE_INT_ARGB)
+        PDDocument.load(source).use { doc ->
+            val renderer = PDFRenderer(doc)
+            renderer.isSubsamplingAllowed = true
+            if (outputDimension != null) {
+                val scale = outputDimension.width / baseDimension.width.toFloat() * 4f
+                val renderImage = renderer.renderImage(0, scale, ImageType.ARGB)
+                ImageIO.write(renderImage.scale(outputDimension.width,
+                        outputDimension.height), format.formatName, output)
             } else {
-                BufferedImage(baseDimension.width, baseDimension.height, BufferedImage.TYPE_INT_ARGB)
+                val renderImage = renderer.renderImage(0, 4f, ImageType.ARGB)
+                ImageIO.write(renderImage.scale(baseDimension.width,
+                        baseDimension.height), format.formatName, output)
             }
-            val graphics = image.graphics as Graphics2D
-            graphics.background = Color(255, 255, 255, 0)
-            renderer.renderPageToGraphics(0, graphics, image.width / baseDimension.width.toFloat())
-            ImageIO.write(image, format.formatName, output)
             return@use
         }
     }
 
+    private fun BufferedImage.scale(dWidth: Int, dHeight: Int): BufferedImage {
+        return Scalr.resize(this, dWidth, dHeight)
+    }
 }
