@@ -5,7 +5,7 @@ enum class OutputFormat(val extension: String, val formatName: String) {
 
     companion object {
         fun forExtension(extension: String): OutputFormat? {
-            return OutputFormat.values().first { it.extension == extension }
+            return OutputFormat.values().first { it.extension.equals(extension, ignoreCase = true) }
         }
     }
 }

@@ -7,7 +7,7 @@ import java.awt.Dimension
 import java.io.File
 import java.util.*
 
-abstract class ImageAsset(val source: File, val defOutputFormat: OutputFormat) {
+abstract class ImageAsset(val source: File, defOutputFormat: OutputFormat) {
 
     val outputQualifiers: String
     val outputFilename: String
@@ -21,11 +21,7 @@ abstract class ImageAsset(val source: File, val defOutputFormat: OutputFormat) {
             outputFormat = defOutputFormat
         } else {
             outputFilename = nameWithoutExtension.substringBefore('.')
-            outputFormat = try {
-                OutputFormat.valueOf(nameWithoutExtension.substringAfter('.').toUpperCase())
-            } catch (e: IllegalArgumentException) {
-                defOutputFormat
-            }
+            outputFormat = OutputFormat.forExtension(nameWithoutExtension.substringAfter('.')) ?: defOutputFormat
         }
         val sourceQualifiers = source.parentFile.name
         val qualifierParts = sourceQualifiers.split('-')

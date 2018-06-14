@@ -1,8 +1,8 @@
 package org.mariotaku.imgenie.asset
 
 import org.mariotaku.imgenie.model.OutputFormat
+import org.mariotaku.imgenie.scale
 import java.awt.Dimension
-import java.awt.geom.AffineTransform
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
@@ -22,13 +22,5 @@ class BitmapImageAsset(source: File, defOutputFormat: OutputFormat) : ImageAsset
         } else image
 
         ImageIO.write(scaledImage, format.formatName, output)
-    }
-
-    private fun BufferedImage.scale(imageType: Int, width: Int, height: Int): BufferedImage {
-        val dbi = BufferedImage(width, height, imageType)
-        val g = dbi.createGraphics()
-        val at = AffineTransform.getScaleInstance(width / width.toDouble(), height / height.toDouble())
-        g.drawRenderedImage(this, at)
-        return dbi
     }
 }
