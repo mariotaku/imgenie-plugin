@@ -1,9 +1,8 @@
 package org.mariotaku.imgenie.asset
 
+import org.imgscalr.Scalr
 import org.mariotaku.imgenie.model.OutputFormat
-import org.mariotaku.imgenie.scale
 import java.awt.Dimension
-import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
 
@@ -18,7 +17,7 @@ class BitmapImageAsset(source: File, defOutputFormat: OutputFormat) : ImageAsset
     override fun transcodeImage(output: File, format: OutputFormat, baseDimension: Dimension, outputDimension: Dimension?) {
         val image = ImageIO.read(source)
         val scaledImage = if (outputDimension != null) {
-            image.scale(outputDimension.width, outputDimension.height, BufferedImage.TYPE_INT_ARGB)
+            Scalr.resize(image, outputDimension.width, outputDimension.height)
         } else image
 
         ImageIO.write(scaledImage, format.formatName, output)
