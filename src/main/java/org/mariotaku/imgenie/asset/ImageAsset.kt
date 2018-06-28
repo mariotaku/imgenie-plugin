@@ -53,7 +53,7 @@ abstract class ImageAsset(val source: File, defOutputFormat: OutputFormat) {
         config.outputDensities.forEach { outDensity ->
             val fileName = File(createOutputDir(genDir, outDensity), name)
             val scaledDimension = scaledDimension(dimension.width, dimension.height, outDensity)
-            if (canScaleUp || dimension.width <= scaledDimension.width) {
+            if (canScaleUp || scaledDimension.width <= dimension.width) {
                 transcodeImage(fileName, outputFormat, dimension, scaledDimension)
             }
         }
