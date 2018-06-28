@@ -9,6 +9,8 @@ import java.util.*
 
 abstract class ImageAsset(val source: File, defOutputFormat: OutputFormat) {
 
+    open val canScaleUp: Boolean = true
+
     val outputQualifiers: String
     val outputFilename: String
     val outputFormat: OutputFormat
@@ -50,8 +52,10 @@ abstract class ImageAsset(val source: File, defOutputFormat: OutputFormat) {
         }
         config.outputDensities.forEach { outDensity ->
             val fileName = File(createOutputDir(genDir, outDensity), name)
-            transcodeImage(fileName, outputFormat, dimension, scaledDimension(dimension.width,
-                    dimension.height, outDensity))
+            val scaledDimension = scaledDimension(dimension.width, dimension.height, outDensity)
+            if (canScaleUp || dimension.width <= scaledDimension.width) {
+                transcodeImage(fileName, outputFormat, dimension, scaledDimension)
+            }
         }
     }
 
