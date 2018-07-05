@@ -1,7 +1,6 @@
 package org.mariotaku.imgenie.asset
 
 import com.android.resources.Density
-import org.mariotaku.imgenie.ImageAssetsConfig
 import org.mariotaku.imgenie.model.OutputFormat
 import java.awt.Dimension
 import java.io.File
@@ -42,7 +41,7 @@ abstract class ImageAsset(val source: File, defOutputFormat: OutputFormat) {
     abstract fun transcodeImage(output: File, format: OutputFormat, baseDimension: Dimension,
                                 outputDimension: Dimension? = null)
 
-    fun generateImages(config: ImageAssetsConfig, genDir: File) {
+    fun generateImages(densities: List<Density>, genDir: File) {
         val dimension = baseDimension()
         val name = "$outputFilename.${outputFormat.extension}"
         if (sourceDensity == Density.NODPI) {
@@ -50,7 +49,7 @@ abstract class ImageAsset(val source: File, defOutputFormat: OutputFormat) {
             transcodeImage(fileName, outputFormat, dimension)
             return
         }
-        config.densitiesList.forEach { outDensity ->
+        densities.forEach { outDensity ->
             val fileName = File(createOutputDir(genDir, outDensity), name)
             val scaledDimension = scaledDimension(dimension.width, dimension.height, outDensity)
             if (canScaleUp || scaledDimension.width <= dimension.width) {

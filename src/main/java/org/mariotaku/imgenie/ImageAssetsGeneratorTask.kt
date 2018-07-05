@@ -23,14 +23,17 @@ open class ImageAssetsGeneratorTask : DefaultTask() {
             }
         }
         doLast {
+            val defFormat = config.defFormat
+            val defFormats = config.defFormats
+            val densities = config.densitiesList
             inputs.files.forEach { file ->
-                val defFormat = config.defFormats.firstOrNull { (regex, _) ->
+                val fmt = defFormats.firstOrNull { (regex, _) ->
                     if (regex.matches(file.name)) return@firstOrNull true
                     return@firstOrNull false
-                }?.second ?: config.defFormat
+                }?.second ?: defFormat
 
-                val asset = ImageAsset.get(file, defFormat)
-                asset.generateImages(config, genDir)
+                val asset = ImageAsset.get(file, fmt)
+                asset.generateImages(densities, genDir)
             }
         }
     }
