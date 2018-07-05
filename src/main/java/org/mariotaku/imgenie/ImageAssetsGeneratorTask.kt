@@ -23,8 +23,13 @@ open class ImageAssetsGeneratorTask : DefaultTask() {
             }
         }
         doLast {
-            inputs.files.forEach {
-                val asset = ImageAsset.get(it, config.outputFormat)
+            inputs.files.forEach { file ->
+                val defFormat = config.outputFormats.firstOrNull { (regex, _) ->
+                    if (regex.matches(file.name)) return@firstOrNull true
+                    return@firstOrNull false
+                }?.second ?: config.outputFormat
+
+                val asset = ImageAsset.get(file, defFormat)
                 asset.generateImages(config, genDir)
             }
         }
