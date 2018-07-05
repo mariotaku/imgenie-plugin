@@ -5,14 +5,14 @@ import org.gradle.api.model.ObjectFactory
 import org.mariotaku.imgenie.model.OutputFormat
 
 open class ImageAssetsConfig(
-        vararg outputDensities: String = arrayOf("mdpi", "hdpi", "xhdpi", "xxhdpi", "xxxhdpi"),
-        outputFormat: String = "png",
-        outputFormats: Map<String, String> = emptyMap()
+        var outputDensities: Set<String> = setOf("mdpi", "hdpi", "xhdpi", "xxhdpi", "xxxhdpi"),
+        var outputFormat: String = "png",
+        var outputFormats: Map<String, String> = emptyMap()
 ) {
 
-    val outputDensities: List<Density> = outputDensities.map { Density.getEnum(it) }
-    val outputFormat: OutputFormat = OutputFormat.valueOf(outputFormat.toUpperCase())
-    val outputFormats: List<Pair<Regex, OutputFormat>> = outputFormats.map { (k, v) ->
+    internal val densitiesList: List<Density> = outputDensities.map { Density.getEnum(it) }
+    internal val defFormat: OutputFormat = OutputFormat.valueOf(outputFormat.toUpperCase())
+    internal val defFormats: List<Pair<Regex, OutputFormat>> = outputFormats.map { (k, v) ->
         Regex(k) to OutputFormat.valueOf(v.toUpperCase())
     }
 
