@@ -15,12 +15,7 @@ open class ImageAssetsGeneratorTask : DefaultTask() {
 
     init {
         doFirst {
-            outputs.files.forEach {
-                val parentFile = it.parentFile
-                if (!parentFile.exists()) {
-                    parentFile.mkdirs()
-                }
-            }
+            outputs.files.forEach { it.deleteRecursively() }
         }
         doLast {
             val defFormat = config.defFormat
@@ -39,8 +34,8 @@ open class ImageAssetsGeneratorTask : DefaultTask() {
     }
 
 
-    fun setupInputOutput(outputName: String) {
-        val imageTrees = (buildVariant.flavors + buildType + "main").map {
+    fun setupInputOutput() {
+        val imageTrees = (buildVariant.flavors.toTypedArray() + buildType + "main").map {
             return@map project.file(arrayOf("src", it, "images").joinToString(File.separator))
         }.filter { it.isDirectory }.map { project.fileTree(it) }
         if (!imageTrees.isEmpty()) {

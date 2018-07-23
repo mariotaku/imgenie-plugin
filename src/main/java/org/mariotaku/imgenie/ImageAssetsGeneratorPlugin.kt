@@ -45,7 +45,7 @@ class ImageAssetsGeneratorPlugin : Plugin<Project> {
                     it.buildType = buildTypeName
                     it.genDir = genImagesDir
 
-                    it.setupInputOutput(buildVariant.camelCaseName(buildTypeName))
+                    it.setupInputOutput()
                 }
 
                 project.tasks.injectDependency(buildVariant.camelCaseName(buildTypeName, "generate", "Resources"), task)
