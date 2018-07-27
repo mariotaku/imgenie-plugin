@@ -35,7 +35,9 @@ open class ImageAssetsGeneratorTask : DefaultTask() {
 
 
     fun setupInputOutput() {
-        val imageTrees = (buildVariant.flavors.toTypedArray() + buildType + "main").map {
+        val imageTrees = arrayOf(buildVariant.camelCaseName(buildType),
+                buildVariant.camelCaseName(""), *buildVariant.flavors.toTypedArray(),
+                buildType, "main").map {
             return@map project.file(arrayOf("src", it, "images").joinToString(File.separator))
         }.filter { it.isDirectory }.map { project.fileTree(it) }
         if (!imageTrees.isEmpty()) {
