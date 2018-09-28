@@ -19,7 +19,7 @@ class ImageAssetsGeneratorPlugin implements Plugin<Project> {
         target.afterEvaluate { p ->
             p.android.applicationVariants.all { BaseVariant variant ->
                 def taskName = "generate${variant.name.capitalize()}ImageAssets"
-                def genImagesDir = new File(p.buildDir, ["generated", "images", variant.name]
+                def genImagesDir = new File(p.buildDir, ["generated", "images", variant.dirName]
                         .join(File.separator))
 
                 def task = p.task(taskName, group: "imageassets") {
