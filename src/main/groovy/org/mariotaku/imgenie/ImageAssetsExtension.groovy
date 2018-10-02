@@ -7,4 +7,6 @@ class ImageAssetsExtension {
     Set<Density> outputDensities = [Density.MEDIUM, Density.HIGH, Density.XHIGH, Density.XXHIGH, Density.XXXHIGH]
     OutputFormat outputFormat = OutputFormat.PNG
     Map<String, OutputFormat> outputFormats = [:]
+
+    boolean allowOverride = true
 }

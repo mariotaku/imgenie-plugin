@@ -1,5 +1,6 @@
 package org.mariotaku.imgenie
 
+import com.android.build.gradle.AndroidConfig
 import com.android.build.gradle.api.BaseVariant
 import com.android.resources.Density
 import org.gradle.api.Plugin
@@ -17,6 +18,7 @@ class ImageAssetsGeneratorPlugin implements Plugin<Project> {
         ImageAssetsExtension config = target.extensions.create("imageAssets", ImageAssetsExtension)
 
         target.afterEvaluate { p ->
+            AndroidConfig a = p.android
             p.android.applicationVariants.all { BaseVariant variant ->
                 def taskName = "generate${variant.name.capitalize()}ImageAssets"
                 def genImagesDir = new File(p.buildDir, ["generated", "images", variant.dirName]
@@ -56,8 +58,12 @@ class ImageAssetsGeneratorPlugin implements Plugin<Project> {
                         }
                     }
                 }
-
-                variant.registerGeneratedResFolders(p.files(genImagesDir).builtBy(task))
+                if (config.allowOverride) {
+                    p.android.sourceSets.maybeCreate(variant.name).res.srcDir(genImagesDir)
+                    variant.mergeResources.dependsOn(task)
+                } else {
+                    variant.registerGeneratedResFolders(p.files(genImagesDir).builtBy(task))
+                }
             }
         }
     }
