@@ -8,6 +8,10 @@ dependencies {
     compile 'org.apache.xmlgraphics:batik-codec:1.9.1'
     compile 'org.apache.pdfbox:pdfbox:2.0.9'
     compile 'org.imgscalr:imgscalr-lib:4.2'
+
+    testCompile('org.spockframework:spock-core:1.1-groovy-2.4') {
+        exclude group: 'org.codehaus.groovy'
+    }
 }
 
 repositories {
@@ -21,7 +25,7 @@ publishing {
         maven(MavenPublication) {
             groupId 'com.github.mariotaku'
             artifactId 'imgenie-plugin'
-            version '0.2.1'
+            version '0.2.2'
 
             from components.java
         }

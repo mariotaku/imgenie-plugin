@@ -1,7 +1,9 @@
 package org.mariotaku.imgenie.model
 
 enum OutputFormat {
-    PNG("png", "png"), JPEG("jpg", "jpeg"), WEBP("webp", "webp");
+    PNG("png", "png"),
+    JPEG("jpg", "jpeg"),
+    WEBP("webp", "webp");
 
     final String extension;
     final String formatName;

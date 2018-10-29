@@ -12,4 +12,13 @@ class Utils {
         if (index < 0) return file.name
         return file.name.substring(0, index)
     }
+
+    static boolean sameParent(File file, File parent) {
+        File fileParent = file
+        while (fileParent != null) {
+            if (fileParent == parent) return true
+            fileParent = fileParent.parentFile
+        }
+        return false
+    }
 }

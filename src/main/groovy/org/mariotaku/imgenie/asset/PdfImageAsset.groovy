@@ -33,11 +33,11 @@ class PdfImageAsset extends ImageAsset {
                 def scale = (outputDimension.width / baseDimension.width * 4f) as float
                 def renderImage = renderer.renderImage(0, scale, ImageType.ARGB)
                 ImageIO.write(Scalr.resize(renderImage, outputDimension.width as int,
-                        outputDimension.height as int), format.formatName, output)
+                        outputDimension.height as int, Scalr.OP_ANTIALIAS), format.formatName, output)
             } else {
                 def renderImage = renderer.renderImage(0, 4f, ImageType.ARGB)
                 ImageIO.write(Scalr.resize(renderImage, baseDimension.width as int,
-                        baseDimension.height as int), format.formatName, output)
+                        baseDimension.height as int, Scalr.OP_ANTIALIAS), format.formatName, output)
             }
         }
     }
