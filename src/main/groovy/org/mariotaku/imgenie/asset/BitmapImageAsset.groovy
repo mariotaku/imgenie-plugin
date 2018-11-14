@@ -7,6 +7,7 @@ import org.mariotaku.imgenie.util.CWebP
 import javax.imageio.ImageIO
 import java.awt.*
 import java.awt.color.ColorSpace
+import java.awt.image.BufferedImage
 import java.awt.image.ColorConvertOp
 
 class BitmapImageAsset extends ImageAsset {
@@ -21,19 +22,13 @@ class BitmapImageAsset extends ImageAsset {
 
     @Override
     Dimension baseDimension() {
-        if (assetFormat == OutputFormat.WEBP) {
-            def tmp = new ByteArrayOutputStream()
-            CWebP.decode(source.newInputStream(), tmp)
-            def image = ImageIO.read(new ByteArrayInputStream(tmp.toByteArray()))
-            return new Dimension(image.width, image.height)
-        }
-        def image = ImageIO.read(source)
+        def image = readImage()
         return new Dimension(image.width, image.height)
     }
 
     @Override
     void transcodeImage(File output, OutputFormat format, Dimension baseDimension, Dimension outputDimension) {
-        def image = ImageIO.read(source)
+        def image = readImage()
         Image scaledImage;
         if (outputDimension != null) {
             def method = antiAliasing ? Scalr.Method.BALANCED : Scalr.Method.SPEED
@@ -50,5 +45,14 @@ class BitmapImageAsset extends ImageAsset {
         } else {
             ImageIO.write(scaledImage, format.formatName, output)
         }
+    }
+
+    private BufferedImage readImage() {
+        if (assetFormat == OutputFormat.WEBP) {
+            def tmp = new ByteArrayOutputStream()
+            CWebP.decode(source.newInputStream(), tmp)
+            return ImageIO.read(new ByteArrayInputStream(tmp.toByteArray()))
+        }
+        return ImageIO.read(source)
     }
 }
