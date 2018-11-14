@@ -2,6 +2,7 @@ package org.mariotaku.imgenie.asset
 
 import org.imgscalr.Scalr
 import org.mariotaku.imgenie.model.OutputFormat
+import org.mariotaku.imgenie.util.CWebP
 
 import javax.imageio.ImageIO
 import java.awt.*
@@ -10,13 +11,22 @@ import java.awt.image.ColorConvertOp
 
 class BitmapImageAsset extends ImageAsset {
 
-    BitmapImageAsset(File source, OutputFormat defOutputFormat, boolean canScaleUp = false) {
+    public final OutputFormat assetFormat;
+
+    BitmapImageAsset(File source, OutputFormat assetFormat, OutputFormat defOutputFormat, boolean canScaleUp = false) {
         super(source, defOutputFormat)
+        this.assetFormat = assetFormat
         this.canScaleUp = canScaleUp
     }
 
     @Override
     Dimension baseDimension() {
+        if (assetFormat == OutputFormat.WEBP) {
+            def tmp = new ByteArrayOutputStream()
+            CWebP.decode(source.newInputStream(), tmp)
+            def image = ImageIO.read(new ByteArrayInputStream(tmp.toByteArray()))
+            return new Dimension(image.width, image.height)
+        }
         def image = ImageIO.read(source)
         return new Dimension(image.width, image.height)
     }
@@ -33,6 +43,12 @@ class BitmapImageAsset extends ImageAsset {
             scaledImage = image
         }
 
-        ImageIO.write(scaledImage, format.formatName, output)
+        if (format == OutputFormat.WEBP) {
+            def tmp = new ByteArrayOutputStream()
+            ImageIO.write(scaledImage, "PNG", tmp)
+            CWebP.encode(new ByteArrayInputStream(tmp.toByteArray()), output.newOutputStream(), quality)
+        } else {
+            ImageIO.write(scaledImage, format.formatName, output)
+        }
     }
 }

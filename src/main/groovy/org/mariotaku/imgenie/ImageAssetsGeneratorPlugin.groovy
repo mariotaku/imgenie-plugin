@@ -72,10 +72,14 @@ class ImageAssetsGeneratorPlugin implements Plugin<Project> {
                             boolean antiAliasing = config.antiAliasingMap.find {
                                 file.name.matches(it.key)
                             }?.value ?: config.antiAliasing
+                            int quality = config.outputQualities.find {
+                                file.name.matches(it.key)
+                            }?.value ?: config.outputQuality
                             Set<Density> densities = config.outputDensities
 
                             def asset = ImageAsset.get(file, fmt, scaleUpBitmap)
                             asset.antiAliasing = antiAliasing
+                            asset.quality = quality
                             if (Utils.sameParent(file, mainImagesDir)) {
                                 asset.generateImages(densities, genMainImagesDir)
                             } else {

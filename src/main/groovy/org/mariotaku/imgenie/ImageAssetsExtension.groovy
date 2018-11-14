@@ -9,6 +9,9 @@ class ImageAssetsExtension {
     OutputFormat outputFormat = OutputFormat.PNG
     Map<String, OutputFormat> outputFormats = [:]
 
+    int outputQuality = 100
+    Map<String, Integer> outputQualities = [:]
+
     boolean scaleUpBitmap = false
     Map<String, Boolean> scaleUpBitmaps = [:]
 

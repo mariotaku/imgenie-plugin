@@ -17,6 +17,7 @@ abstract class ImageAsset {
 
     boolean canScaleUp = true
     boolean antiAliasing = true
+    int quality = 100
 
     ImageAsset(File source, OutputFormat defOutputFormat) {
         this.source = source
@@ -95,13 +96,14 @@ abstract class ImageAsset {
         switch (Utils.extension(file).toLowerCase()) {
             case "svg": return new SvgImageAsset(file, defOutputFormat)
             case "pdf": return new PdfImageAsset(file, defOutputFormat)
-            case "jpg": return new BitmapImageAsset(file, defOutputFormat, scaleUpBitmap)
+            case "jpg": return new BitmapImageAsset(file, OutputFormat.JPEG, defOutputFormat, scaleUpBitmap)
+            case "webp": return new BitmapImageAsset(file, OutputFormat.WEBP, defOutputFormat, scaleUpBitmap)
             case "png": if (Utils.nameWithoutExtension(file).endsWith(".9")) {
                 return new NinePatchBitmapImageAsset(file, defOutputFormat, scaleUpBitmap)
             } else {
-                return new BitmapImageAsset(file, defOutputFormat, scaleUpBitmap)
+                return new BitmapImageAsset(file, OutputFormat.PNG ,defOutputFormat, scaleUpBitmap)
             }
-            default: throw UnknownFormatConversionException("Unrecognized file ${file.name}")
+            default: throw new UnknownFormatConversionException("Unrecognized file ${file.name}")
         }
     }
 }
