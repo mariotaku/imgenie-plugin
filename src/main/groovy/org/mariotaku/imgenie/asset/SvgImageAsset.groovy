@@ -14,6 +14,7 @@ import org.apache.batik.transcoder.image.JPEGTranscoder
 import org.apache.batik.transcoder.image.PNGTranscoder
 import org.apache.batik.util.XMLResourceDescriptor
 import org.mariotaku.imgenie.batik.DensityUserAgentAdapter
+import org.mariotaku.imgenie.batik.WEBPTranscoder
 import org.mariotaku.imgenie.model.OutputFormat
 
 import java.awt.*
@@ -57,12 +58,16 @@ class SvgImageAsset extends ImageAsset {
         switch (format) {
             case OutputFormat.JPEG:
                 t = new JPEGTranscoder()
-                t.addTranscodingHint(JPEGTranscoder.KEY_QUALITY, 1f)
+                t.addTranscodingHint(JPEGTranscoder.KEY_QUALITY, quality / 100f)
                 break
             case OutputFormat.PNG:
                 t = new PNGTranscoder()
                 break
-            default: throw UnsupportedOperationException()
+            case OutputFormat.WEBP:
+                t = new WEBPTranscoder()
+                t.addTranscodingHint(WEBPTranscoder.KEY_QUALITY, quality)
+                break
+            default: throw new UnsupportedOperationException("Unsupported output format $format")
         }
         if (outputDimension != null) {
             t.addTranscodingHint(SVGAbstractTranscoder.KEY_WIDTH, outputDimension.width as Float)
