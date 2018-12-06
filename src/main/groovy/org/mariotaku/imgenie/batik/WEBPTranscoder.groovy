@@ -37,6 +37,10 @@ class WEBPTranscoder extends ImageTranscoder {
         def tmp = new ByteArrayOutputStream()
         ImageIO.write(img, "PNG", tmp)
         def quality = hints.containsKey(KEY_QUALITY) ? ((Integer) hints.get(KEY_QUALITY)).intValue() : 100
-        CWebP.encode(new ByteArrayInputStream(tmp.toByteArray()), output.outputStream, quality)
+        try {
+            CWebP.encode(new ByteArrayInputStream(tmp.toByteArray()), output.outputStream, quality)
+        } catch (IOException e) {
+            throw new TranscoderException(e)
+        }
     }
 }

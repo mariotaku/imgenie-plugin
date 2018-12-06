@@ -9,7 +9,8 @@ class CWebP {
         output << process.inputStream
         output.flush()
         output.close()
-        if (process.waitFor() != 0) throw new Exception()
+        def retCode = process.waitFor()
+        if (retCode != 0) throw new IOException("command returned $retCode")
     }
 
     static void decode(InputStream input, OutputStream output) {
@@ -20,6 +21,7 @@ class CWebP {
         output << process.inputStream
         output.flush()
         output.close()
-        if (process.waitFor() != 0) throw new Exception()
+        def retCode = process.waitFor()
+        if (retCode != 0) throw new IOException("command returned $retCode")
     }
 }
